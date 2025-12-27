@@ -1,8 +1,35 @@
--e 
-# Environment files
+# Environment files with secrets
+.env
 *.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
+backend/.env
+frontend/.env
+
+# But allow .env.example files
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Logs
+*.log
+
+# Build outputs
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test reports
+test_reports/
+
