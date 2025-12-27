@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, #0078D4 0%, #004C87 50%, #00A651 100%);
+}
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+  @apply bg-ms-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-ms-dark-blue transition-all;
+}
+
+.btn-secondary {
+  @apply bg-white text-ms-blue px-6 py-3 rounded-lg font-semibold border-2 border-ms-blue hover:bg-ms-blue hover:text-white transition-all;
+}
+
+.input-field {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ms-blue focus:border-transparent outline-none transition-all;
+}
+
+.filter-chip {
+  @apply px-3 py-1 rounded-full text-sm font-medium cursor-pointer transition-all;
+}
+
+.filter-chip-active {
+  @apply bg-ms-blue text-white;
+}
+
+.filter-chip-inactive {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
