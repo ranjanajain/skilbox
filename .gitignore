@@ -1,13 +1,9 @@
 # Environment files with secrets
 .env
-*.env
-backend/.env
-frontend/.env
+**/.env
 
 # But allow .env.example files
-!.env.example
-!backend/.env.example
-!frontend/.env.example
+!**/.env.example
 
 # Dependencies
 node_modules/
@@ -32,4 +28,3 @@ Thumbs.db
 
 # Test reports
 test_reports/
-
