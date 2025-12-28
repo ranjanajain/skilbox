@@ -104,6 +104,8 @@ FILE_TYPES = [
 
 USER_ROLES = ["admin", "content_admin", "training_partner", "ms_stakeholder"]
 
+PARTNER_TYPES = ["CSP", "ESI", "MPL", "GSI"]
+
 ACCESS_REQUEST_STATUS = ["pending", "approved", "rejected"]
 
 # Pydantic Models
@@ -114,6 +116,7 @@ class UserRegister(BaseModel):
     organization: str
     domain: Optional[str] = None
     role: str = "training_partner"
+    partner_type: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
