@@ -1174,37 +1174,12 @@ const CourseDetailModal = ({ course, onClose, hasAccess, user }) => {
             )}
           </div>
 
-          {/* Access Request Section */}
-          {user.role === 'training_partner' && !hasAccess && !hasPending && (
+          {/* Portal Access Status */}
+          {user.role === 'training_partner' && !hasAccess && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h3 className="font-semibold text-yellow-800 mb-2">Request Access</h3>
-              <p className="text-sm text-yellow-700 mb-3">
-                You need approval to download content from this course. Please provide a reason for your request.
-              </p>
-              <textarea
-                className="w-full input-field mb-3"
-                rows={3}
-                placeholder="Explain why you need access to this content..."
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                data-testid="access-reason-input"
-              />
-              <button 
-                onClick={requestAccess}
-                disabled={requesting || !reason.trim()}
-                className="bg-levelup-accent text-levelup-darker px-4 py-2 rounded-lg font-medium hover:bg-levelup-accent-hover disabled:opacity-50"
-                data-testid="request-access-button"
-              >
-                {requesting ? 'Submitting...' : 'Request Access'}
-              </button>
-            </div>
-          )}
-
-          {hasPending && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-center space-x-2">
-                <Clock className="text-blue-500" size={20} />
-                <span className="font-medium text-blue-800">Access request pending approval</span>
+                <Clock className="text-yellow-500" size={20} />
+                <span className="font-medium text-yellow-800">Your portal access is pending approval. Once approved, you'll be able to download all content.</span>
               </div>
             </div>
           )}
@@ -1213,7 +1188,7 @@ const CourseDetailModal = ({ course, onClose, hasAccess, user }) => {
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="text-green-500" size={20} />
-                <span className="font-medium text-green-800">You have access to download this content</span>
+                <span className="font-medium text-green-800">You have portal access - download any content</span>
               </div>
             </div>
           )}
