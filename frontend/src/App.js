@@ -1074,23 +1074,6 @@ const CourseCard = ({ course, hasAccess, onView }) => {
 const CourseDetailModal = ({ course, onClose, hasAccess, user }) => {
   const [downloading, setDownloading] = useState(null);
 
-  const requestAccess = async () => {
-    if (!reason.trim()) return;
-    setRequesting(true);
-    try {
-      const result = await api.request('/access-requests', {
-        method: 'POST',
-        body: JSON.stringify({ course_id: course.id, reason })
-      });
-      onAccessRequested({ ...result, course_id: course.id, status: 'pending' });
-      alert('Access request submitted successfully!');
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setRequesting(false);
-    }
-  };
-
   const downloadFile = async (fileId) => {
     setDownloading(fileId);
     try {
@@ -1109,6 +1092,15 @@ const CourseDetailModal = ({ course, onClose, hasAccess, user }) => {
     return FileText;
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
@@ -1123,6 +1115,7 @@ const CourseDetailModal = ({ course, onClose, hasAccess, user }) => {
                 <span className="px-2 py-1 bg-levelup-accent/20 text-levelup-darker rounded text-sm">{course.course_type}</span>
                 <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm">{course.level}</span>
               </div>
+              <p className="text-sm text-gray-500 mt-2">Last Updated: {formatDate(course.updated_at)}</p>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-lg">
               <X size={24} />
