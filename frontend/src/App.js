@@ -1,18 +1,16 @@
-import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { 
   BookOpen, Upload, Download, Users, BarChart3, LogOut, Menu, X, 
-  ChevronRight, Search, Filter, FileText, Video, File, Archive,
-  CheckCircle, Clock, XCircle, Plus, Eye, Edit, Trash2, 
-  Calendar, MapPin, UserCheck, TrendingUp, Award, Shield,
-  Home, Settings, Bell, ChevronDown, Globe, Layers
+  ChevronRight, Search, FileText, Video, Archive,
+  CheckCircle, Clock, XCircle, Plus, Trash2, 
+  Calendar, UserCheck, Shield,
+  Home, ChevronDown, Globe, Layers
 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '/api';
 
 // Auth Context
 const AuthContext = createContext(null);
-
-const useAuth = () => useContext(AuthContext);
 
 // API Helper
 const api = {
@@ -69,39 +67,41 @@ const api = {
 
 // Components
 const Navbar = ({ user, onLogout, onMenuClick }) => (
-  <nav className="bg-white shadow-md sticky top-0 z-50">
+  <nav className="bg-levelup-dark shadow-lg sticky top-0 z-50">
     <div className="max-w-7xl mx-auto px-4">
       <div className="flex justify-between items-center h-16">
         <div className="flex items-center space-x-4">
-          <button onClick={onMenuClick} className="lg:hidden p-2 rounded-lg hover:bg-gray-100">
+          <button onClick={onMenuClick} className="lg:hidden p-2 rounded-lg hover:bg-levelup-teal text-white">
             <Menu size={24} />
           </button>
-          <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-r from-ms-blue to-levelup-green rounded-lg flex items-center justify-center">
-              <BookOpen className="text-white" size={24} />
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <span className="text-white text-sm">Technofocus</span>
+              <span className="text-levelup-accent font-bold">|</span>
+              <span className="text-levelup-accent font-bold flex items-center">
+                <BarChart3 size={18} className="mr-1" />
+                LevelUp
+              </span>
             </div>
-            <div>
-              <span className="text-xl font-bold text-levelup-dark">Skilling in a Box</span>
-              <span className="text-xs text-gray-500 block">Powered by LevelUp</span>
-            </div>
+            <span className="text-gray-400 text-xs hidden md:inline">Sponsored by Microsoft</span>
           </div>
         </div>
         
         {user && (
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex items-center space-x-2 text-sm">
-              <span className="text-gray-600">Welcome,</span>
-              <span className="font-semibold text-levelup-dark">{user.full_name}</span>
-              <span className={`px-2 py-1 rounded-full text-xs ${
-                user.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                user.role === 'content_admin' ? 'bg-blue-100 text-blue-700' :
-                user.role === 'ms_stakeholder' ? 'bg-green-100 text-green-700' :
-                'bg-gray-100 text-gray-700'
+              <span className="text-gray-300">Welcome,</span>
+              <span className="font-semibold text-white">{user.full_name}</span>
+              <span className={`px-2 py-1 rounded text-xs ${
+                user.role === 'admin' ? 'bg-levelup-accent text-levelup-darker' :
+                user.role === 'content_admin' ? 'bg-blue-500 text-white' :
+                user.role === 'ms_stakeholder' ? 'bg-green-500 text-white' :
+                'bg-gray-600 text-white'
               }`}>
                 {user.role.replace('_', ' ')}
               </span>
             </div>
-            <button onClick={onLogout} className="flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors">
+            <button onClick={onLogout} className="flex items-center space-x-1 text-gray-300 hover:text-levelup-accent transition-colors">
               <LogOut size={20} />
               <span className="hidden md:inline">Logout</span>
             </button>
@@ -152,14 +152,18 @@ const Sidebar = ({ user, activeView, setActiveView, isOpen, onClose }) => {
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={onClose} />
       )}
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform lg:transform-none ${
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-levelup-darker transform transition-transform lg:transform-none ${
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
         <div className="h-full flex flex-col">
-          <div className="p-4 border-b lg:hidden">
-            <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 float-right">
+          <div className="p-4 border-b border-levelup-teal lg:hidden">
+            <button onClick={onClose} className="p-2 rounded-lg hover:bg-levelup-teal text-white float-right">
               <X size={24} />
             </button>
+          </div>
+          <div className="p-4 border-b border-levelup-teal">
+            <h2 className="text-levelup-accent font-bold text-lg">Skilling in a Box</h2>
+            <p className="text-gray-400 text-xs">Course Content Repository</p>
           </div>
           <nav className="flex-1 p-4 space-y-2">
             {items.map(item => (
@@ -168,8 +172,8 @@ const Sidebar = ({ user, activeView, setActiveView, isOpen, onClose }) => {
                 onClick={() => { setActiveView(item.id); onClose(); }}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
                   activeView === item.id 
-                    ? 'bg-ms-blue text-white' 
-                    : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-levelup-accent text-levelup-darker' 
+                    : 'text-gray-300 hover:bg-levelup-teal hover:text-white'
                 }`}
               >
                 <item.icon size={20} />
@@ -217,125 +221,181 @@ const LoginPage = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-ms-blue to-levelup-green rounded-xl flex items-center justify-center mx-auto mb-4">
-            <BookOpen className="text-white" size={32} />
+    <div className="min-h-screen gradient-hero flex">
+      {/* Left side - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-12">
+        <div className="mb-8">
+          <div className="flex items-center space-x-2 mb-4">
+            <span className="text-white text-lg">Technofocus</span>
+            <span className="text-levelup-accent font-bold text-xl">|</span>
+            <span className="text-levelup-accent font-bold text-xl flex items-center">
+              <BarChart3 size={24} className="mr-1" />
+              LevelUp
+            </span>
           </div>
-          <h1 className="text-2xl font-bold text-levelup-dark">Skilling in a Box</h1>
-          <p className="text-gray-500 mt-2">Course Content Repository</p>
+          <p className="text-gray-400 text-sm">Sponsored by Microsoft</p>
         </div>
-
-        <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
-          <button
-            onClick={() => setIsLogin(true)}
-            className={`flex-1 py-2 rounded-md font-medium transition-all ${
-              isLogin ? 'bg-white shadow text-ms-blue' : 'text-gray-600'
-            }`}
-          >
-            Sign In
-          </button>
-          <button
-            onClick={() => setIsLogin(false)}
-            className={`flex-1 py-2 rounded-md font-medium transition-all ${
-              !isLogin ? 'bg-white shadow text-ms-blue' : 'text-gray-600'
-            }`}
-          >
-            Register
-          </button>
+        
+        <h1 className="text-4xl font-bold text-white mb-4">
+          Skilling in a Box
+        </h1>
+        <p className="text-xl text-gray-300 mb-8">
+          Your one-stop repository for Microsoft training content and course materials.
+        </p>
+        
+        <div className="space-y-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-lg bg-levelup-accent/20 flex items-center justify-center">
+              <BookOpen className="text-levelup-accent" size={20} />
+            </div>
+            <span className="text-gray-300">Access comprehensive training materials</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-lg bg-levelup-accent/20 flex items-center justify-center">
+              <Download className="text-levelup-accent" size={20} />
+            </div>
+            <span className="text-gray-300">Download PPTs, PDFs, videos & lab files</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-lg bg-levelup-accent/20 flex items-center justify-center">
+              <UserCheck className="text-levelup-accent" size={20} />
+            </div>
+            <span className="text-gray-300">Track learner attendance & execution</span>
+          </div>
         </div>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-            {error}
+      </div>
+      
+      {/* Right side - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+          <div className="text-center mb-8 lg:hidden">
+            <div className="flex items-center justify-center space-x-2 mb-2">
+              <span className="text-levelup-dark font-bold">Technofocus</span>
+              <span className="text-levelup-accent font-bold">|</span>
+              <span className="text-levelup-accent font-bold flex items-center">
+                <BarChart3 size={18} className="mr-1" />
+                LevelUp
+              </span>
+            </div>
+            <h1 className="text-2xl font-bold text-levelup-dark">Skilling in a Box</h1>
+            <p className="text-gray-500 mt-1">Course Content Repository</p>
           </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              required
-              className="input-field"
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              placeholder="your@email.com"
-              data-testid="email-input"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              required
-              className="input-field"
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              placeholder="••••••••"
-              data-testid="password-input"
-            />
+          
+          <div className="hidden lg:block text-center mb-6">
+            <h2 className="text-2xl font-bold text-levelup-dark">Welcome</h2>
+            <p className="text-gray-500">Sign in to access your training content</p>
           </div>
 
-          {!isLogin && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  required
-                  className="input-field"
-                  value={formData.full_name}
-                  onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-                  placeholder="John Doe"
-                  data-testid="fullname-input"
-                />
-              </div>
+          <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setIsLogin(true)}
+              className={`flex-1 py-2 rounded-md font-medium transition-all ${
+                isLogin ? 'bg-levelup-dark text-white shadow' : 'text-gray-600'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => setIsLogin(false)}
+              className={`flex-1 py-2 rounded-md font-medium transition-all ${
+                !isLogin ? 'bg-levelup-dark text-white shadow' : 'text-gray-600'
+              }`}
+            >
+              Register
+            </button>
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Organization</label>
-                <input
-                  type="text"
-                  required
-                  className="input-field"
-                  value={formData.organization}
-                  onChange={(e) => setFormData({...formData, organization: e.target.value})}
-                  placeholder="Your Company"
-                  data-testid="organization-input"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                <select
-                  className="input-field"
-                  value={formData.role}
-                  onChange={(e) => setFormData({...formData, role: e.target.value})}
-                  data-testid="role-select"
-                >
-                  <option value="training_partner">Training Partner</option>
-                  <option value="content_admin">Content Admin</option>
-                  <option value="ms_stakeholder">Microsoft Stakeholder</option>
-                </select>
-              </div>
-            </>
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+              {error}
+            </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            data-testid="submit-button"
-          >
-            {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                required
+                className="input-field"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                placeholder="your@email.com"
+                data-testid="email-input"
+              />
+            </div>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Sponsored by Microsoft
-        </p>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <input
+                type="password"
+                required
+                className="input-field"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                placeholder="••••••••"
+                data-testid="password-input"
+              />
+            </div>
+
+            {!isLogin && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    className="input-field"
+                    value={formData.full_name}
+                    onChange={(e) => setFormData({...formData, full_name: e.target.value})}
+                    placeholder="John Doe"
+                    data-testid="fullname-input"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Organization</label>
+                  <input
+                    type="text"
+                    required
+                    className="input-field"
+                    value={formData.organization}
+                    onChange={(e) => setFormData({...formData, organization: e.target.value})}
+                    placeholder="Your Company"
+                    data-testid="organization-input"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                  <select
+                    className="input-field"
+                    value={formData.role}
+                    onChange={(e) => setFormData({...formData, role: e.target.value})}
+                    data-testid="role-select"
+                  >
+                    <option value="training_partner">Training Partner</option>
+                    <option value="content_admin">Content Admin</option>
+                    <option value="ms_stakeholder">Microsoft Stakeholder</option>
+                  </select>
+                </div>
+              </>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-levelup-accent text-levelup-darker px-6 py-3 rounded-lg font-semibold hover:bg-levelup-accent-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              data-testid="submit-button"
+            >
+              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+            </button>
+          </form>
+
+          <p className="text-center text-xs text-gray-400 mt-6">
+            Sponsored by Microsoft
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -343,7 +403,6 @@ const LoginPage = ({ onLogin }) => {
 
 const Dashboard = ({ user }) => {
   const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -354,37 +413,39 @@ const Dashboard = ({ user }) => {
         }
       } catch (err) {
         console.error(err);
-      } finally {
-        setLoading(false);
       }
     };
     fetchStats();
   }, [user.role]);
 
   const StatCard = ({ icon: Icon, label, value, color }) => (
-    <div className="bg-white rounded-xl shadow-md p-6 card-hover">
-      <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
-        <Icon className="text-white" size={24} />
+    <div className="bg-white rounded-xl shadow-md p-6 card-hover border-l-4" style={{ borderLeftColor: color }}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-gray-500 text-sm">{label}</p>
+          <p className="text-3xl font-bold text-levelup-dark mt-1">{value}</p>
+        </div>
+        <div className={`w-12 h-12 rounded-lg flex items-center justify-center`} style={{ backgroundColor: `${color}20` }}>
+          <Icon style={{ color }} size={24} />
+        </div>
       </div>
-      <p className="text-gray-500 text-sm">{label}</p>
-      <p className="text-3xl font-bold text-levelup-dark mt-1">{value}</p>
     </div>
   );
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-levelup-dark">Welcome back, {user.full_name}!</h1>
-        <p className="text-gray-500 mt-1">Here's what's happening with your training content.</p>
+      <div className="bg-levelup-dark rounded-xl p-6 text-white">
+        <h1 className="text-2xl font-bold">Welcome back, {user.full_name}!</h1>
+        <p className="text-gray-300 mt-1">Here's what's happening with your training content.</p>
       </div>
 
       {['admin', 'ms_stakeholder'].includes(user.role) && stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <StatCard icon={BookOpen} label="Total Courses" value={stats.total_courses} color="bg-ms-blue" />
-          <StatCard icon={Users} label="Training Partners" value={stats.total_partners} color="bg-levelup-green" />
-          <StatCard icon={Download} label="Total Downloads" value={stats.total_downloads} color="bg-purple-500" />
-          <StatCard icon={Calendar} label="Executions" value={stats.total_executions} color="bg-orange-500" />
-          <StatCard icon={UserCheck} label="Trained Learners" value={stats.total_trained_learners} color="bg-pink-500" />
+          <StatCard icon={BookOpen} label="Total Courses" value={stats.total_courses} color="#0D3B36" />
+          <StatCard icon={Users} label="Training Partners" value={stats.total_partners} color="#C4D600" />
+          <StatCard icon={Download} label="Total Downloads" value={stats.total_downloads} color="#9333EA" />
+          <StatCard icon={Calendar} label="Executions" value={stats.total_executions} color="#F97316" />
+          <StatCard icon={UserCheck} label="Trained Learners" value={stats.total_trained_learners} color="#EC4899" />
         </div>
       )}
 
@@ -410,7 +471,7 @@ const Dashboard = ({ user }) => {
               <>
                 <QuickActionButton icon={BarChart3} label="View Analytics Dashboard" />
                 <QuickActionButton icon={Shield} label="Approve Access Requests" />
-                <QuickActionButton icon={TrendingUp} label="Download Reports" />
+                <QuickActionButton icon={Download} label="Download Reports" />
               </>
             )}
           </div>
@@ -423,13 +484,13 @@ const Dashboard = ({ user }) => {
               title="GPS Solution Areas" 
               description="Technical and sales content organized by Microsoft solution areas"
               icon={Globe}
-              color="bg-ms-blue"
+              color="bg-levelup-dark"
             />
             <CategoryCard 
               title="Event-based Content" 
               description="Content packages for AI Tour, Hackathons, and special events"
               icon={Calendar}
-              color="bg-levelup-green"
+              color="bg-levelup-accent"
             />
           </div>
         </div>
@@ -439,17 +500,17 @@ const Dashboard = ({ user }) => {
 };
 
 const QuickActionButton = ({ icon: Icon, label }) => (
-  <button className="w-full flex items-center space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-left">
-    <Icon className="text-ms-blue" size={20} />
-    <span className="text-gray-700">{label}</span>
-    <ChevronRight className="ml-auto text-gray-400" size={16} />
+  <button className="w-full flex items-center space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-levelup-dark hover:text-white transition-colors text-left group">
+    <Icon className="text-levelup-dark group-hover:text-levelup-accent" size={20} />
+    <span className="text-gray-700 group-hover:text-white">{label}</span>
+    <ChevronRight className="ml-auto text-gray-400 group-hover:text-levelup-accent" size={16} />
   </button>
 );
 
 const CategoryCard = ({ title, description, icon: Icon, color }) => (
-  <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
+  <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
     <div className={`w-10 h-10 rounded-lg ${color} flex items-center justify-center flex-shrink-0`}>
-      <Icon className="text-white" size={20} />
+      <Icon className={color === 'bg-levelup-accent' ? 'text-levelup-darker' : 'text-white'} size={20} />
     </div>
     <div>
       <h3 className="font-semibold text-levelup-dark">{title}</h3>
@@ -510,6 +571,7 @@ const CourseBrowser = ({ user }) => {
   useEffect(() => {
     const timer = setTimeout(fetchCourses, 300);
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const hasAccess = (courseId) => {
@@ -526,7 +588,7 @@ const CourseBrowser = ({ user }) => {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2 pr-8 text-sm focus:ring-2 focus:ring-ms-blue focus:border-transparent"
+        className="appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2 pr-8 text-sm focus:ring-2 focus:ring-levelup-accent focus:border-transparent"
       >
         <option value="">{label}</option>
         {options?.map(opt => (
@@ -539,9 +601,9 @@ const CourseBrowser = ({ user }) => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-levelup-dark">Course Content Library</h1>
-        <p className="text-gray-500 mt-1">Browse and access training materials</p>
+      <div className="bg-levelup-dark rounded-xl p-6 text-white">
+        <h1 className="text-2xl font-bold">Course Content Library</h1>
+        <p className="text-gray-300 mt-1">Browse and access training materials</p>
       </div>
 
       {/* Filters */}
@@ -552,7 +614,7 @@ const CourseBrowser = ({ user }) => {
             <input
               type="text"
               placeholder="Search courses..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-ms-blue focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-levelup-accent focus:border-transparent"
               value={filters.search}
               onChange={(e) => setFilters({...filters, search: e.target.value})}
               data-testid="search-input"
@@ -588,7 +650,7 @@ const CourseBrowser = ({ user }) => {
       {/* Course Grid */}
       {loading ? (
         <div className="text-center py-12">
-          <div className="animate-spin w-12 h-12 border-4 border-ms-blue border-t-transparent rounded-full mx-auto"></div>
+          <div className="animate-spin w-12 h-12 border-4 border-levelup-accent border-t-transparent rounded-full mx-auto"></div>
           <p className="text-gray-500 mt-4">Loading courses...</p>
         </div>
       ) : (
@@ -600,7 +662,6 @@ const CourseBrowser = ({ user }) => {
               hasAccess={hasAccess(course.id)}
               hasPending={hasPendingRequest(course.id)}
               onView={() => setSelectedCourse(course)}
-              userRole={user.role}
             />
           ))}
         </div>
@@ -620,7 +681,7 @@ const CourseBrowser = ({ user }) => {
   );
 };
 
-const CourseCard = ({ course, hasAccess, hasPending, onView, userRole }) => {
+const CourseCard = ({ course, hasAccess, hasPending, onView }) => {
   const levelColors = {
     'Beginner': 'bg-green-100 text-green-700',
     'Intermediate': 'bg-yellow-100 text-yellow-700',
@@ -629,7 +690,7 @@ const CourseCard = ({ course, hasAccess, hasPending, onView, userRole }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden card-hover" data-testid={`course-card-${course.id}`}>
-      <div className="h-2 bg-gradient-to-r from-ms-blue to-levelup-green"></div>
+      <div className="h-2 bg-levelup-dark"></div>
       <div className="p-5">
         <div className="flex items-start justify-between mb-3">
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${levelColors[course.level] || 'bg-gray-100 text-gray-700'}`}>
@@ -643,8 +704,8 @@ const CourseCard = ({ course, hasAccess, hasPending, onView, userRole }) => {
         <p className="text-sm text-gray-500 mb-4 line-clamp-2">{course.description}</p>
         
         <div className="flex flex-wrap gap-2 mb-4">
-          <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs">{course.solution_area}</span>
-          <span className="px-2 py-1 bg-purple-50 text-purple-700 rounded text-xs">{course.course_type}</span>
+          <span className="px-2 py-1 bg-levelup-dark/10 text-levelup-dark rounded text-xs">{course.solution_area}</span>
+          <span className="px-2 py-1 bg-levelup-accent/20 text-levelup-darker rounded text-xs">{course.course_type}</span>
         </div>
         
         <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
@@ -654,7 +715,7 @@ const CourseCard = ({ course, hasAccess, hasPending, onView, userRole }) => {
         
         <button 
           onClick={onView}
-          className="w-full btn-primary text-sm py-2"
+          className="w-full bg-levelup-dark text-white py-2 rounded-lg font-medium hover:bg-levelup-darker transition-colors"
           data-testid={`view-course-${course.id}`}
         >
           View Details
@@ -686,7 +747,7 @@ const CourseDetailModal = ({ course, onClose, hasAccess, hasPending, user, onAcc
     }
   };
 
-  const downloadFile = async (fileId, fileName) => {
+  const downloadFile = async (fileId) => {
     setDownloading(fileId);
     try {
       const result = await api.request(`/courses/${course.id}/files/${fileId}/download`);
@@ -707,19 +768,19 @@ const CourseDetailModal = ({ course, onClose, hasAccess, hasPending, user, onAcc
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
-        <div className="h-2 bg-gradient-to-r from-ms-blue to-levelup-green"></div>
+        <div className="h-2 bg-levelup-dark"></div>
         
-        <div className="p-6 border-b">
+        <div className="p-6 border-b bg-gray-50">
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold text-levelup-dark">{course.title}</h2>
               <div className="flex flex-wrap gap-2 mt-2">
-                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">{course.solution_area}</span>
-                <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-sm">{course.course_type}</span>
+                <span className="px-2 py-1 bg-levelup-dark/10 text-levelup-dark rounded text-sm">{course.solution_area}</span>
+                <span className="px-2 py-1 bg-levelup-accent/20 text-levelup-darker rounded text-sm">{course.course_type}</span>
                 <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm">{course.level}</span>
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+            <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-lg">
               <X size={24} />
             </button>
           </div>
@@ -750,7 +811,7 @@ const CourseDetailModal = ({ course, onClose, hasAccess, hasPending, user, onAcc
                   return (
                     <div key={file.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center space-x-3">
-                        <FileIcon className="text-ms-blue" size={20} />
+                        <FileIcon className="text-levelup-dark" size={20} />
                         <div>
                           <p className="font-medium text-sm">{file.original_name}</p>
                           <p className="text-xs text-gray-500">{file.file_type}</p>
@@ -758,9 +819,9 @@ const CourseDetailModal = ({ course, onClose, hasAccess, hasPending, user, onAcc
                       </div>
                       {hasAccess && (
                         <button 
-                          onClick={() => downloadFile(file.id, file.original_name)}
+                          onClick={() => downloadFile(file.id)}
                           disabled={downloading === file.id}
-                          className="flex items-center space-x-1 px-3 py-1 bg-ms-blue text-white rounded-lg text-sm hover:bg-ms-dark-blue disabled:opacity-50"
+                          className="flex items-center space-x-1 px-3 py-1 bg-levelup-accent text-levelup-darker rounded-lg text-sm hover:bg-levelup-accent-hover disabled:opacity-50"
                           data-testid={`download-file-${file.id}`}
                         >
                           <Download size={14} />
@@ -794,7 +855,7 @@ const CourseDetailModal = ({ course, onClose, hasAccess, hasPending, user, onAcc
               <button 
                 onClick={requestAccess}
                 disabled={requesting || !reason.trim()}
-                className="btn-primary disabled:opacity-50"
+                className="bg-levelup-accent text-levelup-darker px-4 py-2 rounded-lg font-medium hover:bg-levelup-accent-hover disabled:opacity-50"
                 data-testid="request-access-button"
               >
                 {requesting ? 'Submitting...' : 'Request Access'}
@@ -835,7 +896,7 @@ const InfoItem = ({ label, value }) => (
 const ContentUpload = ({ user }) => {
   const [metadata, setMetadata] = useState(null);
   const [courses, setCourses] = useState([]);
-  const [mode, setMode] = useState('new'); // 'new' or 'existing'
+  const [mode, setMode] = useState('new');
   const [selectedCourse, setSelectedCourse] = useState('');
   const [formData, setFormData] = useState({
     title: '', description: '', category: '', solution_area: '', solution_play: '',
@@ -888,7 +949,6 @@ const ContentUpload = ({ user }) => {
         courseId = result.id;
       }
 
-      // Upload files
       for (const fileItem of files) {
         setUploadProgress(prev => ({ ...prev, [fileItem.type]: 'uploading' }));
         
@@ -943,7 +1003,7 @@ const ContentUpload = ({ user }) => {
       ) : type === 'checkbox' ? (
         <input
           type="checkbox"
-          className="w-5 h-5 rounded border-gray-300 text-ms-blue focus:ring-ms-blue"
+          className="w-5 h-5 rounded border-gray-300 text-levelup-accent focus:ring-levelup-accent"
           checked={formData[name]}
           onChange={(e) => setFormData({...formData, [name]: e.target.checked})}
           data-testid={`${name}-checkbox`}
@@ -964,14 +1024,14 @@ const ContentUpload = ({ user }) => {
   const FileUploadField = ({ fileType }) => {
     const existingFile = files.find(f => f.type === fileType);
     return (
-      <div className="border border-dashed border-gray-300 rounded-lg p-4">
+      <div className="border border-dashed border-gray-300 rounded-lg p-4 hover:border-levelup-accent transition-colors">
         <p className="text-sm font-medium text-gray-700 mb-2">{fileType}</p>
         {existingFile ? (
           <div className="flex items-center justify-between bg-gray-50 rounded p-2">
             <span className="text-sm text-gray-600 truncate">{existingFile.file.name}</span>
             <div className="flex items-center space-x-2">
               {uploadProgress[fileType] === 'uploading' && (
-                <div className="animate-spin w-4 h-4 border-2 border-ms-blue border-t-transparent rounded-full"></div>
+                <div className="animate-spin w-4 h-4 border-2 border-levelup-accent border-t-transparent rounded-full"></div>
               )}
               {uploadProgress[fileType] === 'done' && (
                 <CheckCircle className="text-green-500" size={16} />
@@ -999,18 +1059,17 @@ const ContentUpload = ({ user }) => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-levelup-dark">Upload Course Content</h1>
-        <p className="text-gray-500 mt-1">Add new courses or upload files to existing courses</p>
+      <div className="bg-levelup-dark rounded-xl p-6 text-white">
+        <h1 className="text-2xl font-bold">Upload Course Content</h1>
+        <p className="text-gray-300 mt-1">Add new courses or upload files to existing courses</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md p-6">
-        {/* Mode Selection */}
         <div className="flex space-x-4 mb-6">
           <button
             onClick={() => setMode('new')}
             className={`flex-1 py-3 rounded-lg font-medium transition-all ${
-              mode === 'new' ? 'bg-ms-blue text-white' : 'bg-gray-100 text-gray-700'
+              mode === 'new' ? 'bg-levelup-dark text-white' : 'bg-gray-100 text-gray-700'
             }`}
             data-testid="mode-new"
           >
@@ -1019,7 +1078,7 @@ const ContentUpload = ({ user }) => {
           <button
             onClick={() => setMode('existing')}
             className={`flex-1 py-3 rounded-lg font-medium transition-all ${
-              mode === 'existing' ? 'bg-ms-blue text-white' : 'bg-gray-100 text-gray-700'
+              mode === 'existing' ? 'bg-levelup-dark text-white' : 'bg-gray-100 text-gray-700'
             }`}
             data-testid="mode-existing"
           >
@@ -1082,7 +1141,6 @@ const ContentUpload = ({ user }) => {
             </>
           )}
 
-          {/* File Uploads */}
           <div>
             <h3 className="text-lg font-semibold text-levelup-dark mb-4">Course Content Files</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1095,7 +1153,7 @@ const ContentUpload = ({ user }) => {
           <button
             type="submit"
             disabled={uploading || (mode === 'existing' && !selectedCourse)}
-            className="btn-primary w-full disabled:opacity-50"
+            className="w-full bg-levelup-accent text-levelup-darker py-3 rounded-lg font-semibold hover:bg-levelup-accent-hover disabled:opacity-50"
             data-testid="submit-upload"
           >
             {uploading ? 'Uploading...' : (mode === 'new' ? 'Create Course & Upload Files' : 'Upload Files')}
@@ -1113,6 +1171,7 @@ const AccessRequestsManagement = ({ user }) => {
 
   useEffect(() => {
     fetchRequests();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const fetchRequests = async () => {
@@ -1147,9 +1206,9 @@ const AccessRequestsManagement = ({ user }) => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-levelup-dark">Access Requests</h1>
-        <p className="text-gray-500 mt-1">Review and manage training partner access requests</p>
+      <div className="bg-levelup-dark rounded-xl p-6 text-white">
+        <h1 className="text-2xl font-bold">Access Requests</h1>
+        <p className="text-gray-300 mt-1">Review and manage training partner access requests</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -1159,7 +1218,7 @@ const AccessRequestsManagement = ({ user }) => {
               key={status}
               onClick={() => setFilter(status)}
               className={`px-4 py-2 rounded-lg font-medium capitalize transition-all ${
-                filter === status ? 'bg-ms-blue text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                filter === status ? 'bg-levelup-dark text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
               data-testid={`filter-${status}`}
             >
@@ -1170,7 +1229,7 @@ const AccessRequestsManagement = ({ user }) => {
 
         {loading ? (
           <div className="p-8 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-ms-blue border-t-transparent rounded-full mx-auto"></div>
+            <div className="animate-spin w-8 h-8 border-4 border-levelup-accent border-t-transparent rounded-full mx-auto"></div>
           </div>
         ) : requests.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
@@ -1239,6 +1298,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roleFilter]);
 
   const fetchUsers = async () => {
@@ -1273,7 +1333,7 @@ const UserManagement = () => {
   };
 
   const roleColors = {
-    admin: 'bg-purple-100 text-purple-700',
+    admin: 'bg-levelup-accent text-levelup-darker',
     content_admin: 'bg-blue-100 text-blue-700',
     training_partner: 'bg-gray-100 text-gray-700',
     ms_stakeholder: 'bg-green-100 text-green-700'
@@ -1281,9 +1341,9 @@ const UserManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-levelup-dark">User Management</h1>
-        <p className="text-gray-500 mt-1">Manage users, roles, and approvals</p>
+      <div className="bg-levelup-dark rounded-xl p-6 text-white">
+        <h1 className="text-2xl font-bold">User Management</h1>
+        <p className="text-gray-300 mt-1">Manage users, roles, and approvals</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -1304,7 +1364,7 @@ const UserManagement = () => {
 
         {loading ? (
           <div className="p-8 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-ms-blue border-t-transparent rounded-full mx-auto"></div>
+            <div className="animate-spin w-8 h-8 border-4 border-levelup-accent border-t-transparent rounded-full mx-auto"></div>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -1405,20 +1465,20 @@ const ExecutionsManagement = ({ user }) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-levelup-dark">
+        <div className="bg-levelup-dark rounded-xl p-6 text-white flex-1 mr-4">
+          <h1 className="text-2xl font-bold">
             {user.role === 'training_partner' ? 'My Executions' : 'All Executions'}
           </h1>
-          <p className="text-gray-500 mt-1">Course delivery schedules and attendance tracking</p>
+          <p className="text-gray-300 mt-1">Course delivery schedules and attendance tracking</p>
         </div>
         {user.role === 'training_partner' && (
           <button
             onClick={() => setShowScheduleModal(true)}
-            className="btn-primary flex items-center space-x-2"
+            className="bg-levelup-accent text-levelup-darker px-4 py-3 rounded-lg font-semibold hover:bg-levelup-accent-hover flex items-center space-x-2"
             data-testid="schedule-execution-button"
           >
             <Plus size={20} />
-            <span>Schedule Execution</span>
+            <span>Schedule</span>
           </button>
         )}
       </div>
@@ -1426,7 +1486,7 @@ const ExecutionsManagement = ({ user }) => {
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-ms-blue border-t-transparent rounded-full mx-auto"></div>
+            <div className="animate-spin w-8 h-8 border-4 border-levelup-accent border-t-transparent rounded-full mx-auto"></div>
           </div>
         ) : executions.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
@@ -1470,7 +1530,7 @@ const ExecutionsManagement = ({ user }) => {
                         {!exe.attendance_submitted && exe.status === 'scheduled' && (
                           <button
                             onClick={() => setShowAttendanceModal(exe)}
-                            className="px-3 py-1 bg-ms-blue text-white rounded text-sm hover:bg-ms-dark-blue"
+                            className="px-3 py-1 bg-levelup-accent text-levelup-darker rounded text-sm hover:bg-levelup-accent-hover"
                             data-testid={`submit-attendance-${exe.id}`}
                           >
                             Submit Attendance
@@ -1629,7 +1689,7 @@ const ScheduleExecutionModal = ({ onClose, onSuccess }) => {
           <button
             type="submit"
             disabled={submitting}
-            className="btn-primary w-full disabled:opacity-50"
+            className="w-full bg-levelup-accent text-levelup-darker py-3 rounded-lg font-semibold hover:bg-levelup-accent-hover disabled:opacity-50"
             data-testid="schedule-submit-button"
           >
             {submitting ? 'Scheduling...' : 'Schedule Execution'}
@@ -1728,7 +1788,7 @@ const AttendanceModal = ({ execution, onClose, onSuccess }) => {
           <button
             type="submit"
             disabled={submitting}
-            className="btn-primary w-full disabled:opacity-50"
+            className="w-full bg-levelup-accent text-levelup-darker py-3 rounded-lg font-semibold hover:bg-levelup-accent-hover disabled:opacity-50"
             data-testid="attendance-submit-button"
           >
             {submitting ? 'Submitting...' : 'Submit Attendance'}
@@ -1768,41 +1828,53 @@ const Analytics = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin w-12 h-12 border-4 border-ms-blue border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-12 h-12 border-4 border-levelup-accent border-t-transparent rounded-full"></div>
       </div>
     );
   }
 
+  const StatCard = ({ icon: Icon, label, value, color }) => (
+    <div className="bg-white rounded-xl shadow-md p-6 card-hover border-l-4" style={{ borderLeftColor: color }}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-gray-500 text-sm">{label}</p>
+          <p className="text-3xl font-bold text-levelup-dark mt-1">{value}</p>
+        </div>
+        <div className={`w-12 h-12 rounded-lg flex items-center justify-center`} style={{ backgroundColor: `${color}20` }}>
+          <Icon style={{ color }} size={24} />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-levelup-dark">Analytics Dashboard</h1>
-        <p className="text-gray-500 mt-1">Insights on content usage and learner engagement</p>
+      <div className="bg-levelup-dark rounded-xl p-6 text-white">
+        <h1 className="text-2xl font-bold">Analytics Dashboard</h1>
+        <p className="text-gray-300 mt-1">Insights on content usage and learner engagement</p>
       </div>
 
-      {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <StatCard icon={BookOpen} label="Total Courses" value={overview?.total_courses || 0} color="bg-ms-blue" />
-        <StatCard icon={Users} label="Training Partners" value={overview?.total_partners || 0} color="bg-levelup-green" />
-        <StatCard icon={Download} label="Total Downloads" value={overview?.total_downloads || 0} color="bg-purple-500" />
-        <StatCard icon={Calendar} label="Executions" value={overview?.total_executions || 0} color="bg-orange-500" />
-        <StatCard icon={UserCheck} label="Trained Learners" value={overview?.total_trained_learners || 0} color="bg-pink-500" />
+        <StatCard icon={BookOpen} label="Total Courses" value={overview?.total_courses || 0} color="#0D3B36" />
+        <StatCard icon={Users} label="Training Partners" value={overview?.total_partners || 0} color="#C4D600" />
+        <StatCard icon={Download} label="Total Downloads" value={overview?.total_downloads || 0} color="#9333EA" />
+        <StatCard icon={Calendar} label="Executions" value={overview?.total_executions || 0} color="#F97316" />
+        <StatCard icon={UserCheck} label="Trained Learners" value={overview?.total_trained_learners || 0} color="#EC4899" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Downloaded Courses */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-lg font-semibold text-levelup-dark mb-4">Top Downloaded Courses</h2>
           <div className="space-y-3">
             {downloadData?.top_courses?.map((course, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <span className="w-8 h-8 bg-ms-blue text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  <span className="w-8 h-8 bg-levelup-dark text-white rounded-full flex items-center justify-center text-sm font-bold">
                     {idx + 1}
                   </span>
                   <span className="font-medium text-gray-700 truncate max-w-[200px]">{course.course_title}</span>
                 </div>
-                <span className="text-ms-blue font-semibold">{course.count}</span>
+                <span className="text-levelup-dark font-semibold">{course.count}</span>
               </div>
             ))}
             {(!downloadData?.top_courses || downloadData.top_courses.length === 0) && (
@@ -1811,7 +1883,6 @@ const Analytics = () => {
           </div>
         </div>
 
-        {/* Learners by Organization */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-lg font-semibold text-levelup-dark mb-4">Learners by Organization</h2>
           <div className="space-y-3">
@@ -1824,7 +1895,7 @@ const Analytics = () => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-bold text-levelup-green">{org.total_learners}</p>
+                  <p className="text-xl font-bold text-levelup-accent">{org.total_learners}</p>
                   <p className="text-xs text-gray-500">learners</p>
                 </div>
               </div>
@@ -1836,7 +1907,6 @@ const Analytics = () => {
         </div>
       </div>
 
-      {/* Learners by Course */}
       <div className="bg-white rounded-xl shadow-md p-6">
         <h2 className="text-lg font-semibold text-levelup-dark mb-4">Top Courses by Trained Learners</h2>
         <div className="overflow-x-auto">
@@ -1854,7 +1924,7 @@ const Analytics = () => {
                   <td className="px-4 py-3 font-medium">{course.course_title}</td>
                   <td className="px-4 py-3 text-gray-600">{course.total_executions}</td>
                   <td className="px-4 py-3">
-                    <span className="font-bold text-levelup-green">{course.total_learners}</span>
+                    <span className="font-bold text-levelup-accent">{course.total_learners}</span>
                   </td>
                 </tr>
               ))}
@@ -1868,16 +1938,6 @@ const Analytics = () => {
     </div>
   );
 };
-
-const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div className="bg-white rounded-xl shadow-md p-6 card-hover">
-    <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>
-      <Icon className="text-white" size={24} />
-    </div>
-    <p className="text-gray-500 text-sm">{label}</p>
-    <p className="text-3xl font-bold text-levelup-dark mt-1">{value}</p>
-  </div>
-);
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -1911,15 +1971,15 @@ const ManageCourses = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-levelup-dark">Manage Courses</h1>
-        <p className="text-gray-500 mt-1">View and manage all course content</p>
+      <div className="bg-levelup-dark rounded-xl p-6 text-white">
+        <h1 className="text-2xl font-bold">Manage Courses</h1>
+        <p className="text-gray-300 mt-1">View and manage all course content</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-ms-blue border-t-transparent rounded-full mx-auto"></div>
+            <div className="animate-spin w-8 h-8 border-4 border-levelup-accent border-t-transparent rounded-full mx-auto"></div>
           </div>
         ) : courses.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
@@ -1947,7 +2007,7 @@ const ManageCourses = () => {
                     <td className="px-4 py-3 text-gray-600">{course.category}</td>
                     <td className="px-4 py-3 text-gray-600">{course.solution_area}</td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">
+                      <span className="px-2 py-1 bg-levelup-dark/10 text-levelup-dark rounded text-sm">
                         {course.files?.length || 0} files
                       </span>
                     </td>
@@ -2007,7 +2067,7 @@ function App() {
     return (
       <div className="min-h-screen gradient-hero flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-16 h-16 border-4 border-white border-t-transparent rounded-full mx-auto"></div>
+          <div className="animate-spin w-16 h-16 border-4 border-levelup-accent border-t-transparent rounded-full mx-auto"></div>
           <p className="text-white mt-4 text-lg">Loading...</p>
         </div>
       </div>
@@ -2045,7 +2105,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-levelup-light">
         <Navbar user={user} onLogout={handleLogout} onMenuClick={() => setSidebarOpen(true)} />
         <div className="flex">
           <Sidebar 
