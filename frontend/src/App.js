@@ -363,10 +363,11 @@ const Sidebar = ({ user, activeView, setActiveView, isOpen, onClose }) => {
 const LoginPage = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    email: '', password: '', full_name: '', organization: '', role: 'training_partner'
+    email: '', password: '', full_name: '', organization: '', role: 'training_partner', partner_type: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [requestSubmitted, setRequestSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -374,24 +375,69 @@ const LoginPage = ({ onLogin }) => {
     setLoading(true);
     
     try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/register';
-      const payload = isLogin 
-        ? { email: formData.email, password: formData.password }
-        : formData;
-      
-      const response = await api.request(endpoint, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
-      
-      api.setToken(response.access_token);
-      onLogin(response.user);
+      if (isLogin) {
+        // Login flow
+        const response = await api.request('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email: formData.email, password: formData.password })
+        });
+        api.setToken(response.access_token);
+        onLogin(response.user);
+      } else {
+        // Request Access flow - register user with pending status
+        const payload = {
+          email: formData.email,
+          password: formData.password,
+          full_name: formData.full_name,
+          organization: formData.role === 'training_partner' ? formData.organization : 'Microsoft',
+          role: formData.role,
+          partner_type: formData.role === 'training_partner' ? formData.partner_type : null
+        };
+        
+        await api.request('/auth/register', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        
+        // Show success message instead of logging in
+        setRequestSubmitted(true);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
+  // Success message after request access submission
+  if (requestSubmitted) {
+    return (
+      <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="text-green-500" size={32} />
+          </div>
+          <h2 className="text-2xl font-bold text-levelup-dark mb-4">Access Request Submitted!</h2>
+          <p className="text-gray-600 mb-6">
+            Thank you for your interest in Skilling in a Box. Your access request has been submitted and is pending approval.
+          </p>
+          <p className="text-gray-500 text-sm mb-6">
+            You will receive an email notification once your request has been reviewed. This typically takes 1-2 business days.
+          </p>
+          <button
+            onClick={() => {
+              setRequestSubmitted(false);
+              setIsLogin(true);
+              setFormData({ email: '', password: '', full_name: '', organization: '', role: 'training_partner', partner_type: '' });
+            }}
+            className="w-full bg-levelup-dark text-white px-6 py-3 rounded-lg font-semibold hover:bg-levelup-darker transition-all"
+          >
+            Back to Sign In
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen gradient-hero flex">
@@ -455,8 +501,12 @@ const LoginPage = ({ onLogin }) => {
           </div>
           
           <div className="hidden lg:block text-center mb-6">
-            <h2 className="text-2xl font-bold text-levelup-dark">Welcome</h2>
-            <p className="text-gray-500">Sign in to access your training content</p>
+            <h2 className="text-2xl font-bold text-levelup-dark">
+              {isLogin ? 'Welcome Back' : 'Request Access'}
+            </h2>
+            <p className="text-gray-500">
+              {isLogin ? 'Sign in to access your training content' : 'Submit your details to request portal access'}
+            </p>
           </div>
 
           <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
@@ -474,7 +524,7 @@ const LoginPage = ({ onLogin }) => {
                 !isLogin ? 'bg-levelup-dark text-white shadow' : 'text-gray-600'
               }`}
             >
-              Register
+              Request Access
             </button>
           </div>
 
@@ -527,41 +577,69 @@ const LoginPage = ({ onLogin }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Organization</label>
-                  <input
-                    type="text"
-                    required
-                    className="input-field"
-                    value={formData.organization}
-                    onChange={(e) => setFormData({...formData, organization: e.target.value})}
-                    placeholder="Your Company"
-                    data-testid="organization-input"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">I am requesting access as</label>
                   <select
                     className="input-field"
                     value={formData.role}
-                    onChange={(e) => setFormData({...formData, role: e.target.value})}
+                    onChange={(e) => setFormData({...formData, role: e.target.value, organization: '', partner_type: ''})}
                     data-testid="role-select"
                   >
-                    <option value="training_partner">Training Partner</option>
-                    <option value="content_admin">Content Admin</option>
-                    <option value="ms_stakeholder">Microsoft Stakeholder</option>
+                    <option value="training_partner">Partner</option>
+                    <option value="ms_stakeholder">Microsoft</option>
                   </select>
+                </div>
+
+                {/* Additional fields for Partner role */}
+                {formData.role === 'training_partner' && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Organization Name</label>
+                      <input
+                        type="text"
+                        required
+                        className="input-field"
+                        value={formData.organization}
+                        onChange={(e) => setFormData({...formData, organization: e.target.value})}
+                        placeholder="Your Company Name"
+                        data-testid="organization-input"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Partner Type</label>
+                      <select
+                        className="input-field"
+                        value={formData.partner_type}
+                        onChange={(e) => setFormData({...formData, partner_type: e.target.value})}
+                        required
+                        data-testid="partner-type-select"
+                      >
+                        <option value="">Select Partner Type</option>
+                        <option value="CSP">CSP (Cloud Solution Provider)</option>
+                        <option value="ESI">ESI (Enterprise Skills Initiative)</option>
+                        <option value="MPL">MPL (Microsoft Partner Learning)</option>
+                        <option value="GSI">GSI (Global System Integrator)</option>
+                      </select>
+                    </div>
+                  </>
+                )}
+
+                {/* Note for future LevelUp integration */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+                  <p className="text-blue-700">
+                    <strong>Note:</strong> Your access request will be reviewed by our team. You will be notified once approved.
+                  </p>
                 </div>
               </>
             )}
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || (!isLogin && formData.role === 'training_partner' && !formData.partner_type)}
               className="w-full bg-levelup-accent text-levelup-darker px-6 py-3 rounded-lg font-semibold hover:bg-levelup-accent-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               data-testid="submit-button"
             >
-              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Submit Access Request')}
             </button>
           </form>
 
