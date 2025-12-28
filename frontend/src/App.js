@@ -930,13 +930,10 @@ const CourseBrowser = ({ user }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
-  const hasAccess = (courseId) => {
+  const hasAccess = () => {
+    // Portal-level access: once user is approved, they can access all content
     if (['admin', 'content_admin', 'ms_stakeholder'].includes(user.role)) return true;
-    return accessRequests.some(r => r.course_id === courseId && r.status === 'approved');
-  };
-
-  const hasPendingRequest = (courseId) => {
-    return accessRequests.some(r => r.course_id === courseId && r.status === 'pending');
+    return user.is_approved === true;
   };
 
   const FilterDropdown = ({ label, options, value, onChange }) => (
