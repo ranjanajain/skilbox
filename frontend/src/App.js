@@ -1338,52 +1338,6 @@ const ContentUpload = ({ user }) => {
     }
   };
 
-  const FormField = ({ label, name, type = 'text', options, required = false }) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      {type === 'select' ? (
-        <select
-          className="input-field"
-          value={formData[name]}
-          onChange={(e) => setFormData({...formData, [name]: e.target.value})}
-          required={required}
-          data-testid={`${name}-select`}
-        >
-          <option value="">Select {label}</option>
-          {options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-        </select>
-      ) : type === 'textarea' ? (
-        <textarea
-          className="input-field"
-          rows={4}
-          value={formData[name]}
-          onChange={(e) => setFormData({...formData, [name]: e.target.value})}
-          required={required}
-          data-testid={`${name}-textarea`}
-        />
-      ) : type === 'checkbox' ? (
-        <input
-          type="checkbox"
-          className="w-5 h-5 rounded border-gray-300 text-levelup-accent focus:ring-levelup-accent"
-          checked={formData[name]}
-          onChange={(e) => setFormData({...formData, [name]: e.target.checked})}
-          data-testid={`${name}-checkbox`}
-        />
-      ) : (
-        <input
-          type={type}
-          className="input-field"
-          value={formData[name]}
-          onChange={(e) => setFormData({...formData, [name]: e.target.value})}
-          required={required}
-          data-testid={`${name}-input`}
-        />
-      )}
-    </div>
-  );
-
   const FileUploadField = ({ fileType }) => {
     const existingFile = files.find(f => f.type === fileType);
     return (
