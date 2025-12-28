@@ -895,10 +895,8 @@ const CourseBrowser = ({ user }) => {
         setCourses(coursesData.courses);
         setMetadata(metaData);
         
-        if (user.role === 'training_partner') {
-          const requests = await api.request('/access-requests');
-          setAccessRequests(requests);
-        }
+        // Access is now portal-level based on user.is_approved
+        // No need to fetch course-level access requests
       } catch (err) {
         console.error(err);
       } finally {
