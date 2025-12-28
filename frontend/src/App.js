@@ -7,7 +7,16 @@ import {
   Home, ChevronDown, Globe, Layers, Briefcase, Award, Target
 } from 'lucide-react';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '/api';
+// Ensure API URL always ends with /api
+const getApiUrl = () => {
+  let url = process.env.REACT_APP_BACKEND_URL || '';
+  if (url && !url.endsWith('/api')) {
+    url = url.replace(/\/$/, '') + '/api';
+  }
+  return url || '/api';
+};
+
+const API_URL = getApiUrl();
 
 // Auth Context
 const AuthContext = createContext(null);
