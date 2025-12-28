@@ -1009,8 +1009,7 @@ const CourseBrowser = ({ user }) => {
             <CourseCard 
               key={course.id} 
               course={course} 
-              hasAccess={hasAccess(course.id)}
-              hasPending={hasPendingRequest(course.id)}
+              hasAccess={hasAccess()}
               onView={() => setSelectedCourse(course)}
             />
           ))}
@@ -1021,17 +1020,15 @@ const CourseBrowser = ({ user }) => {
         <CourseDetailModal 
           course={selectedCourse} 
           onClose={() => setSelectedCourse(null)}
-          hasAccess={hasAccess(selectedCourse.id)}
-          hasPending={hasPendingRequest(selectedCourse.id)}
+          hasAccess={hasAccess()}
           user={user}
-          onAccessRequested={(req) => setAccessRequests([...accessRequests, req])}
         />
       )}
     </div>
   );
 };
 
-const CourseCard = ({ course, hasAccess, hasPending, onView }) => {
+const CourseCard = ({ course, hasAccess, onView }) => {
   const levelColors = {
     'Beginner': 'bg-green-100 text-green-700',
     'Intermediate': 'bg-yellow-100 text-yellow-700',
