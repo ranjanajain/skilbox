@@ -883,7 +883,6 @@ const CourseBrowser = ({ user }) => {
     category: '', solution_area: '', level: '', course_type: '', search: ''
   });
   const [selectedCourse, setSelectedCourse] = useState(null);
-  const [accessRequests, setAccessRequests] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
