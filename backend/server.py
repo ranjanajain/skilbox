@@ -129,6 +129,7 @@ class UserResponse(BaseModel):
     organization: str
     domain: Optional[str]
     role: str
+    partner_type: Optional[str] = None
     is_approved: bool
     created_at: datetime
 
