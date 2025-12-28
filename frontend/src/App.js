@@ -1044,7 +1044,6 @@ const CourseCard = ({ course, hasAccess, onView }) => {
             {course.level}
           </span>
           {hasAccess && <CheckCircle className="text-green-500" size={20} />}
-          {hasPending && <Clock className="text-yellow-500" size={20} />}
         </div>
         
         <h3 className="font-semibold text-levelup-dark mb-2 line-clamp-2">{course.title}</h3>
@@ -1072,9 +1071,7 @@ const CourseCard = ({ course, hasAccess, onView }) => {
   );
 };
 
-const CourseDetailModal = ({ course, onClose, hasAccess, hasPending, user, onAccessRequested }) => {
-  const [reason, setReason] = useState('');
-  const [requesting, setRequesting] = useState(false);
+const CourseDetailModal = ({ course, onClose, hasAccess, user }) => {
   const [downloading, setDownloading] = useState(null);
 
   const requestAccess = async () => {
