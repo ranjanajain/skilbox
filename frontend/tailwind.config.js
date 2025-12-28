@@ -7,14 +7,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // LevelUp Theme Colors
+        'levelup-dark': '#0D3B36',
+        'levelup-darker': '#092925',
+        'levelup-accent': '#C4D600',
+        'levelup-accent-hover': '#D4E600',
+        'levelup-teal': '#0D4D45',
+        'levelup-light': '#F5F7F7',
+        // Microsoft Colors
         'ms-blue': '#0078D4',
         'ms-dark-blue': '#004C87',
-        'ms-light-blue': '#50E6FF',
         'ms-green': '#107C10',
-        'ms-orange': '#D83B01',
-        'levelup-blue': '#0070AD',
-        'levelup-green': '#00A651',
-        'levelup-dark': '#1A1A1A',
       },
       fontFamily: {
         'segoe': ['Segoe UI', 'system-ui', 'sans-serif'],
@@ -23,3 +26,4 @@ module.exports = {
   },
   plugins: [],
 }
+
