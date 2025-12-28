@@ -1,10 +1,10 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { 
   BookOpen, Upload, Download, Users, BarChart3, LogOut, Menu, X, 
   ChevronRight, Search, FileText, Video, Archive,
   CheckCircle, Clock, XCircle, Plus, Trash2, 
-  Calendar, UserCheck, Shield,
-  Home, ChevronDown, Globe, Layers
+  Calendar, UserCheck, Shield, AlertTriangle,
+  Home, ChevronDown, Globe, Layers, Briefcase, Award, Target
 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '/api';
@@ -63,6 +63,170 @@ const api = {
     
     return response.json();
   }
+};
+
+// Terms of Use Content
+const TERMS_OF_USE = `LevelUp Partner Content Access – Terms of Use
+
+1. Purpose of the Portal
+This portal provides authorized CSPs, Training Services Partners (TSPs), and Microsoft-approved partners access to Microsoft-aligned skilling content ("Content") to support partner-led training delivery for resellers and end customers.
+The Content is intended solely for enablement and training delivery purposes, aligned to Microsoft's skilling and adoption objectives.
+
+2. Eligibility & Access
+Access to this portal is restricted to approved partner domains and is subject to review, approval, suspension, or revocation at any time by Technofocus and/or Microsoft.
+
+3. Permitted Use of Content
+Authorized partners may:
+• Download and use the Content only to deliver Microsoft-aligned workshops, training sessions, or enablement programs
+• Customize delivery without altering Microsoft product positioning, intent, or messaging
+• Use the Content exclusively for non-commercial training delivery unless explicitly approved otherwise
+
+4. Restricted Use
+Partners must not:
+• Resell, sublicense, or commercially monetize the Content
+• Share Content with unauthorized third parties or public repositories
+• Remove Microsoft, Technofocus, or partner attribution notices
+• Modify Content in a way that misrepresents Microsoft solutions or guidance
+• Use the Content outside the approved training scope
+
+5. Content Ownership & IP
+All Content remains the intellectual property of Microsoft and/or Technofocus.
+Access to the Content does not transfer ownership or grant any IP rights beyond limited usage for approved training delivery.
+
+6. Content Updates & Versioning
+Content is subject to:
+• Periodic updates, refreshes, or retirement
+• Version control and change logs maintained by Technofocus
+Partners are responsible for ensuring they use the latest approved version of the Content.
+
+7. Reporting & Usage Insights
+To support Microsoft's skilling impact measurement, partners agree to:
+• Provide planned delivery schedules when requested
+• Submit post-delivery attendance numbers for executed sessions
+• Cooperate with reporting requirements related to trained learner metrics
+Usage analytics may include:
+• Content access and download activity
+• Course usage trends
+• Partner-reported delivery and attendance data
+All reporting is used solely for skilling effectiveness and program governance.
+
+8. Data Privacy
+Any partner or learner data collected through this portal will be handled in accordance with:
+• Technofocus Privacy Policy
+• Microsoft data governance and compliance requirements
+No personal data is shared outside the scope of program reporting.
+
+9. Compliance & Audit
+Microsoft and/or Technofocus reserve the right to:
+• Review partner usage for compliance
+• Request clarifications or corrective actions
+• Revoke access in case of misuse or breach of these terms
+
+10. Acceptance
+By accessing this portal, you confirm that:
+• You are authorized to act on behalf of your organization
+• You understand and agree to these Terms of Use
+• You will ensure compliance across your delivery teams`;
+
+// Terms of Use Modal Component
+const TermsOfUseModal = ({ onAccept, onDecline }) => {
+  const [scrolledToBottom, setScrolledToBottom] = useState(false);
+  const [accepted, setAccepted] = useState(false);
+
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      setScrolledToBottom(true);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+        <div className="bg-levelup-dark p-6 text-white">
+          <div className="flex items-center space-x-3">
+            <AlertTriangle className="text-levelup-accent" size={28} />
+            <div>
+              <h2 className="text-xl font-bold">Terms of Use Agreement</h2>
+              <p className="text-gray-300 text-sm">Please read and accept before continuing</p>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className="p-6 overflow-y-auto max-h-[50vh] bg-gray-50"
+          onScroll={handleScroll}
+        >
+          <div className="prose prose-sm max-w-none">
+            {TERMS_OF_USE.split('\n\n').map((paragraph, idx) => {
+              if (paragraph.startsWith('LevelUp Partner')) {
+                return <h3 key={idx} className="text-lg font-bold text-levelup-dark mb-4">{paragraph}</h3>;
+              }
+              if (paragraph.match(/^\d+\./)) {
+                const [title, ...content] = paragraph.split('\n');
+                return (
+                  <div key={idx} className="mb-4">
+                    <h4 className="font-semibold text-levelup-dark">{title}</h4>
+                    {content.map((line, i) => (
+                      <p key={i} className="text-gray-600 text-sm ml-4">
+                        {line.startsWith('•') ? (
+                          <span className="flex items-start">
+                            <span className="text-levelup-accent mr-2">•</span>
+                            {line.substring(1).trim()}
+                          </span>
+                        ) : line}
+                      </p>
+                    ))}
+                  </div>
+                );
+              }
+              return <p key={idx} className="text-gray-600 text-sm mb-3">{paragraph}</p>;
+            })}
+          </div>
+          
+          {!scrolledToBottom && (
+            <div className="text-center text-gray-400 text-sm mt-4 animate-bounce">
+              ↓ Scroll down to read all terms ↓
+            </div>
+          )}
+        </div>
+        
+        <div className="p-6 border-t bg-white">
+          <label className="flex items-start space-x-3 mb-4">
+            <input
+              type="checkbox"
+              checked={accepted}
+              onChange={(e) => setAccepted(e.target.checked)}
+              disabled={!scrolledToBottom}
+              className="mt-1 w-5 h-5 rounded border-gray-300 text-levelup-accent focus:ring-levelup-accent disabled:opacity-50"
+              data-testid="terms-checkbox"
+            />
+            <span className={`text-sm ${scrolledToBottom ? 'text-gray-700' : 'text-gray-400'}`}>
+              I have read, understood, and agree to the Terms of Use. I confirm that I am authorized to act on behalf of my organization and will ensure compliance across my delivery teams.
+            </span>
+          </label>
+          
+          <div className="flex space-x-4">
+            <button
+              onClick={onDecline}
+              className="flex-1 px-6 py-3 rounded-lg font-semibold border-2 border-gray-300 text-gray-600 hover:bg-gray-100 transition-all"
+              data-testid="terms-decline-button"
+            >
+              Decline
+            </button>
+            <button
+              onClick={onAccept}
+              disabled={!accepted || !scrolledToBottom}
+              className="flex-1 bg-levelup-accent text-levelup-darker px-6 py-3 rounded-lg font-semibold hover:bg-levelup-accent-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              data-testid="terms-accept-button"
+            >
+              Accept & Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 // Components
@@ -163,7 +327,7 @@ const Sidebar = ({ user, activeView, setActiveView, isOpen, onClose }) => {
           </div>
           <div className="p-4 border-b border-levelup-teal">
             <h2 className="text-levelup-accent font-bold text-lg">Skilling in a Box</h2>
-            <p className="text-gray-400 text-xs">Course Content Repository</p>
+            <p className="text-gray-400 text-xs">Partner Content Hub</p>
           </div>
           <nav className="flex-1 p-4 space-y-2">
             {items.map(item => (
@@ -240,7 +404,7 @@ const LoginPage = ({ onLogin }) => {
           Skilling in a Box
         </h1>
         <p className="text-xl text-gray-300 mb-8">
-          Your one-stop repository for Microsoft training content and course materials.
+          Partner Skilling Content Hub for authorized Microsoft CSPs and Training Partners.
         </p>
         
         <div className="space-y-4">
@@ -248,19 +412,19 @@ const LoginPage = ({ onLogin }) => {
             <div className="w-10 h-10 rounded-lg bg-levelup-accent/20 flex items-center justify-center">
               <BookOpen className="text-levelup-accent" size={20} />
             </div>
-            <span className="text-gray-300">Access comprehensive training materials</span>
+            <span className="text-gray-300">Deliver consistent, Microsoft-aligned workshops</span>
           </div>
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-lg bg-levelup-accent/20 flex items-center justify-center">
-              <Download className="text-levelup-accent" size={20} />
+              <Target className="text-levelup-accent" size={20} />
             </div>
-            <span className="text-gray-300">Download PPTs, PDFs, videos & lab files</span>
+            <span className="text-gray-300">Accelerate readiness across sales & technical audiences</span>
           </div>
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-lg bg-levelup-accent/20 flex items-center justify-center">
-              <UserCheck className="text-levelup-accent" size={20} />
+              <Award className="text-levelup-accent" size={20} />
             </div>
-            <span className="text-gray-300">Track learner attendance & execution</span>
+            <span className="text-gray-300">Scale skilling impact with quality & governance</span>
           </div>
         </div>
       </div>
@@ -278,7 +442,7 @@ const LoginPage = ({ onLogin }) => {
               </span>
             </div>
             <h1 className="text-2xl font-bold text-levelup-dark">Skilling in a Box</h1>
-            <p className="text-gray-500 mt-1">Course Content Repository</p>
+            <p className="text-gray-500 mt-1">Partner Content Hub</p>
           </div>
           
           <div className="hidden lg:block text-center mb-6">
@@ -434,11 +598,51 @@ const Dashboard = ({ user }) => {
 
   return (
     <div className="space-y-6">
+      {/* Welcome Section */}
       <div className="bg-levelup-dark rounded-xl p-6 text-white">
-        <h1 className="text-2xl font-bold">Welcome back, {user.full_name}!</h1>
-        <p className="text-gray-300 mt-1">Here's what's happening with your training content.</p>
+        <h1 className="text-2xl font-bold">Welcome to LevelUp – Partner Skilling Content Hub</h1>
+        <p className="text-gray-300 mt-2">
+          This portal is designed for authorized Microsoft CSPs and Training Partners to access curated 
+          <span className="text-levelup-accent font-semibold"> Skilling-in-a-Box </span> 
+          and enablement assets that support partner-led training delivery across resellers and customers.
+        </p>
       </div>
 
+      {/* What Partners Can Do */}
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <h2 className="text-lg font-semibold text-levelup-dark mb-4">The content available here enables partners to:</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 rounded-lg bg-levelup-dark flex items-center justify-center flex-shrink-0">
+              <CheckCircle className="text-levelup-accent" size={20} />
+            </div>
+            <div>
+              <h3 className="font-semibold text-levelup-dark">Deliver Consistent Workshops</h3>
+              <p className="text-sm text-gray-500">Microsoft-aligned training sessions with standardized messaging</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 rounded-lg bg-levelup-dark flex items-center justify-center flex-shrink-0">
+              <Target className="text-levelup-accent" size={20} />
+            </div>
+            <div>
+              <h3 className="font-semibold text-levelup-dark">Accelerate Readiness</h3>
+              <p className="text-sm text-gray-500">Across sales, presales, and technical audiences</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 rounded-lg bg-levelup-dark flex items-center justify-center flex-shrink-0">
+              <Award className="text-levelup-accent" size={20} />
+            </div>
+            <div>
+              <h3 className="font-semibold text-levelup-dark">Scale Skilling Impact</h3>
+              <p className="text-sm text-gray-500">While maintaining quality and governance</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats for Admin/MS Stakeholder */}
       {['admin', 'ms_stakeholder'].includes(user.role) && stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <StatCard icon={BookOpen} label="Total Courses" value={stats.total_courses} color="#0D3B36" />
@@ -449,6 +653,59 @@ const Dashboard = ({ user }) => {
         </div>
       )}
 
+      {/* What You'll Find Here */}
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <h2 className="text-lg font-semibold text-levelup-dark mb-4">What You'll Find Here</h2>
+        <p className="text-gray-600 mb-4">This portal provides controlled access to a growing library of partner-ready assets, including:</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AssetCard 
+            icon={Shield}
+            title="GPS Solution Areas & Access Requests"
+            description="Learn about the content model and request approval to access specific content packages organized by solution areas."
+          />
+          <AssetCard 
+            icon={Calendar}
+            title="Event-based Content"
+            description="Pre-curated content for AI Tours, hackathons, and ready-to-run hands-on learning experiences."
+          />
+          <AssetCard 
+            icon={BookOpen}
+            title="Train-the-Trainer (TTT) Resources"
+            description="Trainer guides, delivery instructions, and facilitator materials for self-service enablement."
+          />
+          <AssetCard 
+            icon={Briefcase}
+            title="Tech Deal Ready Accelerators"
+            description="Assets designed to help partners deliver deal-ready, solution-focused workshops."
+          />
+        </div>
+      </div>
+
+      {/* How Content Is Intended To Be Used */}
+      <div className="bg-levelup-dark rounded-xl p-6 text-white">
+        <h2 className="text-lg font-semibold mb-4">How This Content Is Intended To Be Used</h2>
+        <p className="text-gray-300 mb-4">All content in this portal is provided to:</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex items-center space-x-3">
+            <CheckCircle className="text-levelup-accent flex-shrink-0" size={20} />
+            <span className="text-gray-200">Enable partner-led training delivery</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <CheckCircle className="text-levelup-accent flex-shrink-0" size={20} />
+            <span className="text-gray-200">Ensure consistent Microsoft messaging</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <CheckCircle className="text-levelup-accent flex-shrink-0" size={20} />
+            <span className="text-gray-200">Support measurable skilling outcomes</span>
+          </div>
+        </div>
+        <p className="text-gray-400 text-sm mt-4">
+          Access and usage are governed by program Terms of Use and reporting requirements to help Microsoft understand training reach, adoption, and impact.
+        </p>
+      </div>
+
+      {/* Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-lg font-semibold text-levelup-dark mb-4">Quick Actions</h2>
@@ -498,6 +755,18 @@ const Dashboard = ({ user }) => {
     </div>
   );
 };
+
+const AssetCard = ({ icon: Icon, title, description }) => (
+  <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+    <div className="w-10 h-10 rounded-lg bg-levelup-accent flex items-center justify-center flex-shrink-0">
+      <Icon className="text-levelup-darker" size={20} />
+    </div>
+    <div>
+      <h3 className="font-semibold text-levelup-dark">{title}</h3>
+      <p className="text-sm text-gray-500 mt-1">{description}</p>
+    </div>
+  </div>
+);
 
 const QuickActionButton = ({ icon: Icon, label }) => (
   <button className="w-full flex items-center space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-levelup-dark hover:text-white transition-colors text-left group">
@@ -2039,15 +2308,26 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
+      const accepted = localStorage.getItem('termsAccepted');
+      
       if (token) {
         api.setToken(token);
         try {
           const userData = await api.request('/auth/me');
           setUser(userData);
+          
+          // Check if terms were accepted
+          if (accepted === 'true') {
+            setTermsAccepted(true);
+          } else {
+            setShowTerms(true);
+          }
         } catch (err) {
           api.setToken(null);
         }
@@ -2057,10 +2337,38 @@ function App() {
     checkAuth();
   }, []);
 
+  const handleLogin = (userData) => {
+    setUser(userData);
+    // Show terms modal after login
+    const accepted = localStorage.getItem('termsAccepted');
+    if (accepted !== 'true') {
+      setShowTerms(true);
+    } else {
+      setTermsAccepted(true);
+    }
+  };
+
+  const handleTermsAccept = () => {
+    localStorage.setItem('termsAccepted', 'true');
+    setTermsAccepted(true);
+    setShowTerms(false);
+  };
+
+  const handleTermsDecline = () => {
+    // Logout user if they decline terms
+    api.setToken(null);
+    setUser(null);
+    setShowTerms(false);
+    setTermsAccepted(false);
+    localStorage.removeItem('termsAccepted');
+  };
+
   const handleLogout = () => {
     api.setToken(null);
     setUser(null);
     setActiveView('dashboard');
+    setTermsAccepted(false);
+    localStorage.removeItem('termsAccepted');
   };
 
   if (loading) {
@@ -2075,7 +2383,17 @@ function App() {
   }
 
   if (!user) {
-    return <LoginPage onLogin={setUser} />;
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
+  // Show terms modal if not accepted
+  if (showTerms && !termsAccepted) {
+    return (
+      <>
+        <div className="min-h-screen gradient-hero"></div>
+        <TermsOfUseModal onAccept={handleTermsAccept} onDecline={handleTermsDecline} />
+      </>
+    );
   }
 
   const renderView = () => {
