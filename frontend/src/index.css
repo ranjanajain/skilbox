@@ -9,15 +9,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8f9fa;
+  background-color: #F5F7F7;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* LevelUp Theme - Dark Teal Gradient */
 .gradient-hero {
-  background: linear-gradient(135deg, #0078D4 0%, #004C87 50%, #00A651 100%);
+  background: linear-gradient(135deg, #0D3B36 0%, #092925 50%, #0D4D45 100%);
 }
 
 .card-hover {
@@ -29,16 +30,23 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
+/* LevelUp Primary Button - Yellow/Lime */
 .btn-primary {
-  @apply bg-ms-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-ms-dark-blue transition-all;
+  @apply bg-levelup-accent text-levelup-darker px-6 py-3 rounded-lg font-semibold hover:bg-levelup-accent-hover transition-all;
 }
 
+/* LevelUp Secondary Button - Outline */
 .btn-secondary {
-  @apply bg-white text-ms-blue px-6 py-3 rounded-lg font-semibold border-2 border-ms-blue hover:bg-ms-blue hover:text-white transition-all;
+  @apply bg-transparent text-levelup-accent px-6 py-3 rounded-lg font-semibold border-2 border-levelup-accent hover:bg-levelup-accent hover:text-levelup-darker transition-all;
+}
+
+/* Dark Button */
+.btn-dark {
+  @apply bg-levelup-dark text-white px-6 py-3 rounded-lg font-semibold hover:bg-levelup-darker transition-all;
 }
 
 .input-field {
-  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ms-blue focus:border-transparent outline-none transition-all;
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-levelup-accent focus:border-transparent outline-none transition-all;
 }
 
 .filter-chip {
@@ -46,7 +54,7 @@ body {
 }
 
 .filter-chip-active {
-  @apply bg-ms-blue text-white;
+  @apply bg-levelup-accent text-levelup-darker;
 }
 
 .filter-chip-inactive {
@@ -70,4 +78,11 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
