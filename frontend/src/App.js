@@ -1423,35 +1423,134 @@ const ContentUpload = ({ user }) => {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Course Title" name="title" required />
-                <FormField label="Duration" name="duration" placeholder="e.g., 4.5 Hours" required />
+                <FormFieldInput 
+                  label="Course Title" 
+                  name="title" 
+                  required 
+                  value={formData.title}
+                  onChange={(e) => handleFieldChange('title', e.target.value)}
+                />
+                <FormFieldInput 
+                  label="Duration" 
+                  name="duration" 
+                  required 
+                  value={formData.duration}
+                  onChange={(e) => handleFieldChange('duration', e.target.value)}
+                />
               </div>
               
-              <FormField label="Description" name="description" type="textarea" required />
+              <FormFieldInput 
+                label="Description" 
+                name="description" 
+                type="textarea" 
+                required 
+                value={formData.description}
+                onChange={(e) => handleFieldChange('description', e.target.value)}
+              />
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <FormField label="Category" name="category" type="select" options={metadata?.content_categories} required />
-                <FormField label="Solution Area" name="solution_area" type="select" options={metadata?.solution_areas} required />
-                <FormField label="Solution Play" name="solution_play" type="select" options={metadata?.solution_plays} />
-                <FormField label="Course Type" name="course_type" type="select" options={metadata?.course_types} required />
-                <FormField label="Level" name="level" type="select" options={metadata?.levels} required />
-                <FormField label="Language" name="language" type="select" options={metadata?.languages} required />
-                <FormField label="Target Role" name="target_role" type="select" options={metadata?.roles} required />
+                <FormFieldInput 
+                  label="Category" 
+                  name="category" 
+                  type="select" 
+                  options={metadata?.content_categories} 
+                  required 
+                  value={formData.category}
+                  onChange={(e) => handleFieldChange('category', e.target.value)}
+                />
+                <FormFieldInput 
+                  label="Solution Area" 
+                  name="solution_area" 
+                  type="select" 
+                  options={metadata?.solution_areas} 
+                  required 
+                  value={formData.solution_area}
+                  onChange={(e) => handleFieldChange('solution_area', e.target.value)}
+                />
+                <FormFieldInput 
+                  label="Solution Play" 
+                  name="solution_play" 
+                  type="select" 
+                  options={metadata?.solution_plays} 
+                  value={formData.solution_play}
+                  onChange={(e) => handleFieldChange('solution_play', e.target.value)}
+                />
+                <FormFieldInput 
+                  label="Course Type" 
+                  name="course_type" 
+                  type="select" 
+                  options={metadata?.course_types} 
+                  required 
+                  value={formData.course_type}
+                  onChange={(e) => handleFieldChange('course_type', e.target.value)}
+                />
+                <FormFieldInput 
+                  label="Level" 
+                  name="level" 
+                  type="select" 
+                  options={metadata?.levels} 
+                  required 
+                  value={formData.level}
+                  onChange={(e) => handleFieldChange('level', e.target.value)}
+                />
+                <FormFieldInput 
+                  label="Language" 
+                  name="language" 
+                  type="select" 
+                  options={metadata?.languages} 
+                  required 
+                  value={formData.language}
+                  onChange={(e) => handleFieldChange('language', e.target.value)}
+                />
+                <FormFieldInput 
+                  label="Target Role" 
+                  name="target_role" 
+                  type="select" 
+                  options={metadata?.roles} 
+                  required 
+                  value={formData.target_role}
+                  onChange={(e) => handleFieldChange('target_role', e.target.value)}
+                />
               </div>
               
-              <FormField label="Target Audience" name="target_audience" type="textarea" required />
+              <FormFieldInput 
+                label="Target Audience" 
+                name="target_audience" 
+                type="textarea" 
+                required 
+                value={formData.target_audience}
+                onChange={(e) => handleFieldChange('target_audience', e.target.value)}
+              />
               
               <div className="flex flex-wrap gap-6">
                 <label className="flex items-center space-x-2">
-                  <FormField label="" name="certification_course" type="checkbox" />
+                  <input
+                    type="checkbox"
+                    className="w-5 h-5 rounded border-gray-300 text-levelup-accent focus:ring-levelup-accent"
+                    checked={formData.certification_course}
+                    onChange={(e) => handleFieldChange('certification_course', e.target.checked)}
+                    data-testid="certification_course-checkbox"
+                  />
                   <span className="text-sm text-gray-700">Certification Course</span>
                 </label>
                 <label className="flex items-center space-x-2">
-                  <FormField label="" name="hands_on_lab" type="checkbox" />
+                  <input
+                    type="checkbox"
+                    className="w-5 h-5 rounded border-gray-300 text-levelup-accent focus:ring-levelup-accent"
+                    checked={formData.hands_on_lab}
+                    onChange={(e) => handleFieldChange('hands_on_lab', e.target.checked)}
+                    data-testid="hands_on_lab-checkbox"
+                  />
                   <span className="text-sm text-gray-700">Includes Hands-on Lab</span>
                 </label>
                 <label className="flex items-center space-x-2">
-                  <FormField label="" name="multilingual_audio" type="checkbox" />
+                  <input
+                    type="checkbox"
+                    className="w-5 h-5 rounded border-gray-300 text-levelup-accent focus:ring-levelup-accent"
+                    checked={formData.multilingual_audio}
+                    onChange={(e) => handleFieldChange('multilingual_audio', e.target.checked)}
+                    data-testid="multilingual_audio-checkbox"
+                  />
                   <span className="text-sm text-gray-700">Multi-lingual Audio</span>
                 </label>
               </div>
