@@ -1205,6 +1205,53 @@ const InfoItem = ({ label, value }) => (
   </div>
 );
 
+// Form field component moved outside to prevent re-creation on each render
+const FormFieldInput = ({ label, name, type = 'text', options, required = false, value, onChange, checked, onCheckChange }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    {type === 'select' ? (
+      <select
+        className="input-field"
+        value={value}
+        onChange={onChange}
+        required={required}
+        data-testid={`${name}-select`}
+      >
+        <option value="">Select {label}</option>
+        {options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+      </select>
+    ) : type === 'textarea' ? (
+      <textarea
+        className="input-field"
+        rows={4}
+        value={value}
+        onChange={onChange}
+        required={required}
+        data-testid={`${name}-textarea`}
+      />
+    ) : type === 'checkbox' ? (
+      <input
+        type="checkbox"
+        className="w-5 h-5 rounded border-gray-300 text-levelup-accent focus:ring-levelup-accent"
+        checked={checked}
+        onChange={onCheckChange}
+        data-testid={`${name}-checkbox`}
+      />
+    ) : (
+      <input
+        type={type}
+        className="input-field"
+        value={value}
+        onChange={onChange}
+        required={required}
+        data-testid={`${name}-input`}
+      />
+    )}
+  </div>
+);
+
 const ContentUpload = ({ user }) => {
   const [metadata, setMetadata] = useState(null);
   const [courses, setCourses] = useState([]);
@@ -1234,6 +1281,10 @@ const ContentUpload = ({ user }) => {
     };
     fetchData();
   }, []);
+
+  const handleFieldChange = (name, value) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleFileChange = (e, fileType) => {
     const file = e.target.files[0];
