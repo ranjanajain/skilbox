@@ -290,7 +290,6 @@ const Sidebar = ({ user, activeView, setActiveView, isOpen, onClose }) => {
     training_partner: [
       { id: 'dashboard', label: 'Dashboard', icon: Home },
       { id: 'courses', label: 'Browse Courses', icon: BookOpen },
-      { id: 'my-access', label: 'My Access Requests', icon: Shield },
       { id: 'my-executions', label: 'My Executions', icon: Calendar },
     ],
     content_admin: [
