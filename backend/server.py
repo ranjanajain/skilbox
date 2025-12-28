@@ -488,15 +488,9 @@ async def download_course_file(
     file_id: str,
     user: dict = Depends(get_current_user)
 ):
-    # Check if user has access
+    # Portal-level access: user must be approved to download any content
     if user["role"] == "training_partner" and not user.get("is_approved"):
-        access = db.access_requests.find_one({
-            "user_id": user["_id"],
-            "course_id": course_id,
-            "status": "approved"
-        })
-        if not access:
-            raise HTTPException(status_code=403, detail="Access not approved for this course")
+        raise HTTPException(status_code=403, detail="Your portal access is pending approval")
     
     course = db.courses.find_one({"_id": course_id})
     if not course:
