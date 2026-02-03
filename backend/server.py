@@ -17,13 +17,24 @@ load_dotenv()
 
 app = FastAPI(title="Skilling in a Box API", version="1.0.0")
 
-# CORS
+# CORS - Allow all origins for cross-domain requests
+# Note: Using allow_origin_regex to allow any origin while supporting credentials
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://user-mgmt.preview.emergentagent.com",
+        "https://user-mgmt.emergent.host",
+        "https://box.mslevelup.com",
+        "https://*.mslevelup.com",
+        "https://*.emergentagent.com",
+        "https://*.emergent.host",
+    ],
+    allow_origin_regex=r"https://.*\.(mslevelup\.com|emergentagent\.com|emergent\.host)$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # MongoDB
