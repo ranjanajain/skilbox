@@ -41,17 +41,24 @@ const api = {
       ...options.headers
     };
     
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      ...options,
-      headers
-    });
-    
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
-      throw new Error(error.detail || 'Request failed');
+    try {
+      const response = await fetch(`${API_URL}${endpoint}`, {
+        ...options,
+        headers
+      });
+      
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
+        throw new Error(error.detail || 'Request failed');
+      }
+      
+      return response.json();
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        throw new Error('Unable to connect to server. Please try again later.');
+      }
+      throw err;
     }
-    
-    return response.json();
   },
   
   async uploadFile(endpoint, formData) {
@@ -59,18 +66,25 @@ const api = {
       ...(this.token && { 'Authorization': `Bearer ${this.token}` })
     };
     
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: 'POST',
-      headers,
-      body: formData
-    });
-    
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'Upload failed' }));
-      throw new Error(error.detail || 'Upload failed');
+    try {
+      const response = await fetch(`${API_URL}${endpoint}`, {
+        method: 'POST',
+        headers,
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ detail: 'Upload failed' }));
+        throw new Error(error.detail || 'Upload failed');
+      }
+      
+      return response.json();
+    } catch (err) {
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        throw new Error('Unable to connect to server. Please try again later.');
+      }
+      throw err;
     }
-    
-    return response.json();
   }
 };
 
