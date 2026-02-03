@@ -28,7 +28,7 @@ app.add_middleware(
 
 # MongoDB
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/skillingbox")
-client = MongoClient(MONGO_URL)
+client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=5000)
 db = client.skillingbox
 
 # Azure Blob Storage
