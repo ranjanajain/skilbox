@@ -870,22 +870,30 @@ async def get_learner_analytics(
 # Seed admin user on startup
 @app.on_event("startup")
 async def startup_event():
-    admin = db.users.find_one({"email": "admin@skillingbox.com"})
-    if not admin:
-        admin_id = str(uuid.uuid4())
-        db.users.insert_one({
-            "_id": admin_id,
-            "email": "admin@skillingbox.com",
-            "password": hash_password("admin123"),
-            "full_name": "System Admin",
-            "organization": "Skilling Box",
-            "domain": "skillingbox.com",
-            "role": "admin",
-            "is_approved": True,
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
-        })
-        print("Admin user created: admin@skillingbox.com / admin123")
+    try:
+        # Test MongoDB connection
+        client.admin.command('ping')
+        print("MongoDB connection successful")
+        
+        admin = db.users.find_one({"email": "admin@skillingbox.com"})
+        if not admin:
+            admin_id = str(uuid.uuid4())
+            db.users.insert_one({
+                "_id": admin_id,
+                "email": "admin@skillingbox.com",
+                "password": hash_password("admin123"),
+                "full_name": "System Admin",
+                "organization": "Skilling Box",
+                "domain": "skillingbox.com",
+                "role": "admin",
+                "is_approved": True,
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            })
+            print("Admin user created: admin@skillingbox.com / admin123")
+    except Exception as e:
+        print(f"Startup warning - MongoDB operation failed: {e}")
+        # Don't fail startup, let the app run and handle DB errors per-request
 
 if __name__ == "__main__":
     import uvicorn
