@@ -257,44 +257,52 @@ async def health_check():
 # Auth Routes
 @app.post("/api/auth/register", response_model=TokenResponse)
 async def register(user_data: UserRegister):
-    existing = db.users.find_one({"email": user_data.email})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    user_id = str(uuid.uuid4())
-    domain = user_data.email.split("@")[1] if "@" in user_data.email else None
-    
-    user = {
-        "_id": user_id,
-        "email": user_data.email,
-        "password": hash_password(user_data.password),
-        "full_name": user_data.full_name,
-        "organization": user_data.organization,
-        "domain": domain,
-        "role": user_data.role if user_data.role in USER_ROLES else "training_partner",
-        "is_approved": user_data.role == "admin",
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow()
-    }
-    
-    db.users.insert_one(user)
-    
-    token = create_access_token({"sub": user_id})
-    
-    return TokenResponse(
-        access_token=token,
-        token_type="bearer",
-        user=UserResponse(
-            id=user_id,
-            email=user["email"],
-            full_name=user["full_name"],
-            organization=user["organization"],
-            domain=user["domain"],
-            role=user["role"],
-            is_approved=user["is_approved"],
-            created_at=user["created_at"]
+    try:
+        existing = db.users.find_one({"email": user_data.email})
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        user_id = str(uuid.uuid4())
+        domain = user_data.email.split("@")[1] if "@" in user_data.email else None
+        
+        user = {
+            "_id": user_id,
+            "email": user_data.email,
+            "password": hash_password(user_data.password),
+            "full_name": user_data.full_name,
+            "organization": user_data.organization,
+            "domain": domain,
+            "role": user_data.role if user_data.role in USER_ROLES else "training_partner",
+            "partner_type": user_data.partner_type,
+            "is_approved": user_data.role == "admin",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+        
+        db.users.insert_one(user)
+        
+        token = create_access_token({"sub": user_id})
+        
+        return TokenResponse(
+            access_token=token,
+            token_type="bearer",
+            user=UserResponse(
+                id=user_id,
+                email=user["email"],
+                full_name=user["full_name"],
+                organization=user["organization"],
+                domain=user["domain"],
+                role=user["role"],
+                partner_type=user.get("partner_type"),
+                is_approved=user["is_approved"],
+                created_at=user["created_at"]
+            )
         )
-    )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Registration error: {e}")
+        raise HTTPException(status_code=500, detail="Database connection error. Please try again later.")
 
 @app.post("/api/auth/login", response_model=TokenResponse)
 async def login(credentials: UserLogin):
