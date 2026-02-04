@@ -298,26 +298,33 @@ async def register(user_data: UserRegister):
 
 @app.post("/api/auth/login", response_model=TokenResponse)
 async def login(credentials: UserLogin):
-    user = db.users.find_one({"email": credentials.email})
-    if not user or not verify_password(credentials.password, user["password"]):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-    token = create_access_token({"sub": user["_id"]})
-    
-    return TokenResponse(
-        access_token=token,
-        token_type="bearer",
-        user=UserResponse(
-            id=user["_id"],
-            email=user["email"],
-            full_name=user["full_name"],
-            organization=user["organization"],
-            domain=user.get("domain"),
-            role=user["role"],
-            is_approved=user["is_approved"],
-            created_at=user["created_at"]
+    try:
+        user = db.users.find_one({"email": credentials.email})
+        if not user or not verify_password(credentials.password, user["password"]):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        token = create_access_token({"sub": user["_id"]})
+        
+        return TokenResponse(
+            access_token=token,
+            token_type="bearer",
+            user=UserResponse(
+                id=user["_id"],
+                email=user["email"],
+                full_name=user["full_name"],
+                organization=user["organization"],
+                domain=user.get("domain"),
+                role=user["role"],
+                partner_type=user.get("partner_type"),
+                is_approved=user["is_approved"],
+                created_at=user["created_at"]
+            )
         )
-    )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Login error: {e}")
+        raise HTTPException(status_code=500, detail="Database connection error. Please try again later.")
 
 @app.get("/api/auth/me", response_model=UserResponse)
 async def get_me(user: dict = Depends(get_current_user)):
